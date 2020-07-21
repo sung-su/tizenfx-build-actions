@@ -1,12 +1,12 @@
 {
-  "name": "problem-filter-action",
+  "name": "tizenfx-apidb-action",
   "version": "1.0.0",
-  "description": "Filters the warning or error messages printed on stdout.",
+  "description": "Access to the API database for TizenFX.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js exec.js",
+    "lint": "eslint index.js apidb.js",
     "package": "ncc build index.js -o dist",
-    "test": "eslint index.js exec.js && jest"
+    "test": "eslint index.js apidb.js && jest"
   },
   "repository": {
     "type": "git",
@@ -21,9 +21,12 @@
   "bugs": {
     "url": "https://github.com/TizenAPI/tizenfx-build-actions/issues"
   },
-  "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/problem-filter#readme",
+  "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/apidb#readme",
   "dependencies": {
-    "@actions/core": "^1.1.1"
+    "@actions/core": "^1.1.1",
+    "@actions/github": "^4.0.0",
+    "aws-sdk": "^2.714.2",
+    "diff": "^4.0.2"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
