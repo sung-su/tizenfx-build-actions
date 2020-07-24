@@ -5,7 +5,6 @@ const TABLE_NAME = 'TizenFX_API_Members';
 const INDEX_NAME = 'Category-DocId-index';
 
 class APIDB {
-
   query(category) {
     return new Promise((resolve, reject) => {
       const client = new DynamoDB.DocumentClient({

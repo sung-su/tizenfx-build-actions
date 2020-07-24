@@ -2053,13 +2053,13 @@ async function compareItems(token, category, localItems) {
   const db = new APIDB();
   const dbItems = await db.query(category);
 
+  const octokit = github.getOctokit(token);
+
   // Compare db with local
   const comp = db.compare(dbItems, localItems);
 
+  // Create comment
   if (comp.totalChanged) {
-    const octokit = github.getOctokit(token);
-
-    // Create comment
     const report = makeReport(comp);
     await octokit.issues.createComment({
       owner: github.context.repo.owner,
@@ -2067,27 +2067,27 @@ async function compareItems(token, category, localItems) {
       issue_number: github.context.issue.number,
       body: report,
     });
-
-    // Create Labels
-    const labels = await octokit.issues.listLabelsOnIssue({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.issue.number,
-    });
-
-    const labelSet = new Set(labels.data.map((i) => i.name));
-    comp.publicChanged ? labelSet.add(LABEL_ACR_REQUIRED) :
-                         labelSet.delete(LABEL_ACR_REQUIRED);
-    comp.internalChanged ? labelSet.add(LABEL_INTERNAL_API_CHANGED) :
-                           labelSet.delete(LABEL_INTERNAL_API_CHANGED);
-
-    await octokit.issues.setLabels({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.issue.number,
-      labels: Array.from(labelSet),
-    });
   }
+
+  // Set Labels
+  const labels = await octokit.issues.listLabelsOnIssue({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: github.context.issue.number,
+  });
+
+  const labelSet = new Set(labels.data.map((i) => i.name));
+  comp.publicChanged ? labelSet.add(LABEL_ACR_REQUIRED) :
+                       labelSet.delete(LABEL_ACR_REQUIRED);
+  comp.internalChanged ? labelSet.add(LABEL_INTERNAL_API_CHANGED) :
+                         labelSet.delete(LABEL_INTERNAL_API_CHANGED);
+
+  await octokit.issues.setLabels({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: github.context.issue.number,
+    labels: Array.from(labelSet),
+  });
 }
 
 async function updateItems(category, localItems) {
@@ -19818,7 +19818,6 @@ const TABLE_NAME = 'TizenFX_API_Members';
 const INDEX_NAME = 'Category-DocId-index';
 
 class APIDB {
-
   query(category) {
     return new Promise((resolve, reject) => {
       const client = new DynamoDB.DocumentClient({
