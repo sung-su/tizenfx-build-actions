@@ -19814,8 +19814,7 @@ function escapeHTML(s) {
 const DynamoDB = __webpack_require__(502);
 
 const AWS_REGION = 'ap-northeast-2';
-// const TABLE_NAME = 'TizenFX_API_Members';
-const TABLE_NAME = 'TizenFX_Test';
+const TABLE_NAME = 'TizenFX_API_Members';
 const INDEX_NAME = 'Category-DocId-index';
 
 class APIDB {
