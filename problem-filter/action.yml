@@ -6,11 +6,9 @@ inputs:
     required: true
   type:
     description: 'Problem-matcher type'
-    required: true
     default: 'dotnet'
   files:
     description: 'JSON array of files to print'
-    required: false
 outputs:
   errors:
     description: 'JSON array of error messages during execution of shell'

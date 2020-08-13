@@ -1,6 +1,5 @@
-const process = require('process');
 const path = require('path');
-const exec = require('./exec')
+const exec = require('../common/exec')
 
 test('dotnet build', async() => {
   process.env['INPUT_RUN'] = 'dotnet build';

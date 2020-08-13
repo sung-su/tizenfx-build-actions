@@ -1,6 +1,6 @@
 const path = require('path');
 const core = require('@actions/core');
-const exec = require('./exec');
+const exec = require('../common/exec');
 
 const PROBLEM_MATCHERS = {
   dotnet: {

@@ -4,9 +4,9 @@
   "description": "Filters the warning or error messages printed on stdout.",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js exec.js",
+    "lint": "eslint index.js",
     "package": "ncc build index.js -o dist",
-    "test": "eslint index.js exec.js && jest"
+    "test": "eslint index.js && jest"
   },
   "repository": {
     "type": "git",
@@ -23,11 +23,11 @@
   },
   "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/problem-filter#readme",
   "dependencies": {
-    "@actions/core": "^1.1.1"
+    "@actions/core": "^1.2.4"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
-    "eslint": "^7.4.0",
+    "eslint": "^7.6.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
