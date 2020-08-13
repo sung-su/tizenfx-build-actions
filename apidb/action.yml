@@ -3,7 +3,7 @@ description: 'Access to the API database for TizenFX'
 inputs:
   token:
     description: GitHub Token
-    required: true
+    default: ${{ github.token }}
   operation:
     description: compare, update
     required: true
