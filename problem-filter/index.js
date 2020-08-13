@@ -68,7 +68,10 @@ async function run() {
 
 function setErrors(errors) {
   if (errors) {
-    core.setOutput('errors', JSON.stringify(errors));
+    let errorsStr = JSON.stringify(errors);
+    errorsStr = errorsStr.replace(
+        new RegExp(process.env.GITHUB_WORKSPACE + '/', 'g'), '');
+    core.setOutput('errors', errorsStr);
   }
 }
 
@@ -79,7 +82,7 @@ function getMatchedFile(matcher, match) {
   let file = match[fileIdx];
   if (fromPathIdx) {
     const fromPathDir = path.dirname(match[fromPathIdx]);
-    const baseDir = path.relative(process.env['GITHUB_WORKSPACE'], fromPathDir);
+    const baseDir = path.relative(process.env.GITHUB_WORKSPACE, fromPathDir);
     file = path.join(baseDir, file);
   }
 
