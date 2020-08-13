@@ -4,6 +4,8 @@ inputs:
   ref:
     description: The branch to provide the metadata.
     default: ${{ github.ref }}
+  prop:
+    description: The property key to return as output data, all metadata set of the branch will be return if not set.
 outputs:
   data:
     description: The branch metadata described in .github/branch-metadata.yml

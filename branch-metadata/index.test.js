@@ -25,19 +25,40 @@ test('refs/heads/API7', async() => {
 
 test('no-branch', async() => {
   const metadata = await getMetadata('no-branch');
-  expect(metadata['api-level']).toBe(undefined);
+  expect(metadata).toBe(undefined);
 });
 
-async function getMetadata(ref) {
+test('prop-api-level', async() => {
+  const metadata = await getMetadata('master', 'api-level');
+  expect(metadata).toBe('API8');
+});
+
+test('no-prop', async() => {
+  const metadata = await getMetadata('master', 'no-prop');
+  expect(metadata).toBe(undefined);
+});
+
+test('no-branch-and-no-prop', async() => {
+  const metadata = await getMetadata('no-branch', 'no-prop');
+  expect(metadata).toBe(undefined);
+});
+
+async function getMetadata(ref, prop) {
   process.env['INPUT_REF'] = ref;
+  process.env['INPUT_PROP'] = prop || '';
 
   const index = path.join(__dirname, 'index.js');
 
-  let metadata;
+  let metadata = undefined;
   const ret = await exec(`node ${index}`, {env: process.env}, (line) => {
+    if (line.startsWith('::error::')) {
+      throw new Error(line);
+    }
     if (line.startsWith('::set-output name=data::')) {
-      const json = line.substring('::set-output name=data::'.length) || '{}';
-      metadata = JSON.parse(json);
+      const json = line.substring('::set-output name=data::'.length);
+      if (json) {
+        metadata = JSON.parse(json);
+      }
     }
   });
 

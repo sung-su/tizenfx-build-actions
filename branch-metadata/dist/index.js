@@ -655,7 +655,7 @@ async function run() {
   try {
     // Inputs
     const ref = core.getInput('ref');
-    const upperRef = (ref || '').toUpperCase();
+    const prop = core.getInput('prop');
 
     // Load Branch Metadata File
     const mapFile = process.env.BRANCH_METADATA_FILE ||
@@ -667,11 +667,18 @@ async function run() {
 
     // Set Output
     let branch = ref;
+    const upperRef = (ref || '').toUpperCase();
     if (upperRef.startsWith('REFS/HEADS/')) {
       branch = ref.substring('refs/heads/'.length);
     }
 
-    core.setOutput('data', JSON.stringify(metadata[branch]));
+    if (metadata[branch]) {
+      if (prop) {
+        core.setOutput('data', JSON.stringify(metadata[branch][prop]));
+      } else {
+        core.setOutput('data', JSON.stringify(metadata[branch]));
+      }
+    }
   } catch (error) {
     core.setFailed(error.message);
   }

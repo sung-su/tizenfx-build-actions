@@ -29,6 +29,7 @@ API7:
 
 #### Inputs
   - ref: The target branch of the pull request or the base branch of the push. Default is `$GITHUB_REF`.
+  - prop: The property key to return as output data, all metadata set of the branch will be return if not set.
 
 #### Outputs
   - data: The json object of the specific branch's metadata
