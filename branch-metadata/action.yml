@@ -1,0 +1,12 @@
+name: 'Branch Metadata'
+description: 'Provides metadata information of a branch'
+inputs:
+  ref:
+    description: The branch to provide the metadata.
+    default: ${{ github.ref }}
+outputs:
+  data:
+    description: The branch metadata described in .github/branch-metadata.yml
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
