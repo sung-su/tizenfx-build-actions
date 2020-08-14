@@ -1,0 +1,54 @@
+name: 'Download Workflow Artifacts'
+description: 'Download artifacts of the specific workflow run'
+inputs:
+  token:
+    description: Github Personal Access Token. Access tokens require repo scope for private repos and public_repo scope for public repos.
+    required: true
+  repo:
+    description: The owner and repository name. For example, Codertocat/Hello-World.
+    default: ${{ github.repository }}
+  run-id:
+    description: The id of the workflow run.
+    required: true
+  name:
+    description: The name of an artifact to download. If not set, all artifacts of the workflow run will be downloaded.
+  path:
+    description: The destination directory to locate the downloaded files. If not set, github.workspace will be used.
+    default: ${{ github.workspace }}
+  unzip:
+    description: If true, unzip the downloaded artifacts.
+    default: true
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/github-script@v2
+      id: artifacts
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const repo = '${{ inputs.repo }}'.split('/');
+          if (repo.length !== 2) {
+            core.setFailed('invalid repo : ${{ inputs.repo }}');
+          }
+
+          const resp = await github.actions.listWorkflowRunArtifacts({
+            owner: repo[0],
+            repo: 'repo[1]',
+            run_id: ${{ inputs.run-id }}
+          });
+
+          const name = '${{ inputs.name }}';
+          if (name) {
+            const artifact = resArtifacts.data.artifacts.find(i => i.name == name);
+            core.setOutput('data', JSON.stringify(artifact));
+          } else {
+            core.setOutput('data', JSON.stringify(resArtifacts.data.artifacts));
+          }
+
+    - name: Download Artifacts
+      run: ${{ github.action_path }}/download.sh
+      env:
+        ARTIFACTS: ${{ steps.artifacts.outputs.data }}
+        GITHUB_PAT: ${{ inputs.token }}
+        TARGET_PATH: ${{ inputs.path }}
+        DO_UNZIP: ${{ inputs.unzip }}
