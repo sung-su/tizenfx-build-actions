@@ -21,34 +21,12 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - uses: actions/github-script@v2
-      id: artifacts
-      with:
-        github-token: ${{ inputs.token }}
-        script: |
-          const repo = '${{ inputs.repo }}'.split('/');
-          if (repo.length !== 2) {
-            core.setFailed('invalid repo : ${{ inputs.repo }}');
-          }
-
-          const resp = await github.actions.listWorkflowRunArtifacts({
-            owner: repo[0],
-            repo: 'repo[1]',
-            run_id: ${{ inputs.run-id }}
-          });
-
-          const name = '${{ inputs.name }}';
-          if (name) {
-            const artifact = resArtifacts.data.artifacts.find(i => i.name == name);
-            core.setOutput('data', JSON.stringify(artifact));
-          } else {
-            core.setOutput('data', JSON.stringify(resArtifacts.data.artifacts));
-          }
-
-    - name: Download Artifacts
-      run: ${{ github.action_path }}/download.sh
+    - run: ${{ github.action_path }}/download.sh
+      shell: bash
       env:
-        ARTIFACTS: ${{ steps.artifacts.outputs.data }}
-        GITHUB_PAT: ${{ inputs.token }}
-        TARGET_PATH: ${{ inputs.path }}
-        DO_UNZIP: ${{ inputs.unzip }}
+        ART_TOKEN: ${{ inputs.token }}
+        ART_REPO: ${{ inputs.repo }}
+        ART_RUNID: ${{ inputs.run-id }}
+        ART_NAME: ${{ inputs.name }}
+        ART_PATH: ${{ inputs.path }}
+        ART_UNZIP: ${{ inputs.unzip }}

@@ -1,29 +1,38 @@
 #!/bin/bash -e
 
-if [ -z "$ARTIFACTS" -o -z "$GITHUB_PAT" -o -z "TARGET_PATH" -o -z "$DO_UNZIP" ]; then
-  echo "no required environment variables."
-  exit 1
-fi
+error() {
+  echo $1; exit 1
+}
 
-type=$(echo $ARTIFACTS | jq -r '. | type')
+[ -z "$ART_REPO" ] && error "no ART_REPO in env"
+[ -z "$ART_RUNID" ] && error "no ART_RUNID in env"
+[ -z "$ART_TOKEN" ] && error "no ART_TOKEN in env"
+[ -z "$ART_PATH" ] && error "no ART_PATH in env"
+[ -z "$ART_UNZIP" ] && error "no ART_UNZIP in env"
 
-if [ $type == "object" ]; then
-  tsv=$(echo $ARTIFACTS | jq -r '.name + "," + .archive_download_url')
-elif [ $type == "array" ]; then
-  tsv=$(echo $ARTIFACTS | jq -r '.[] | .name + "," + .archive_download_url')
-fi
+ART_JSON=$(curl -s -u x:$ART_TOKEN https://api.github.com/repos/$ART_REPO/actions/runs/$ART_RUNID/artifacts)
 
-TMP_PATH=$TARGET_PATH/.tmp_zip_files
+ITEMS=$(echo $ART_JSON | jq -r '.artifacts[] | .name + "," + .archive_download_url')
+
+TMP_PATH=$ART_PATH/.tmp_zip_files
 mkdir -p $TMP_PATH
 
-for item in $tsv; do
+for item in $ITEMS; do
+
   IFS=',' read -r name url <<< $item
-  curl -L -o $TMP_PATH/$name.zip -u x:$GITHUB_PAT $url
-  if [ $DO_UNZIP == "true" ]; then
-    unzip -d $TARGET_PATH $TMP_PATH/$name.zip
-  else
-    mv $TMP_PATH/$name.zip $TARGET_PATH/$name.zip
+
+  if [ -n "$ART_NAME" ] && [ "$ART_NAME" != "$name" ]; then
+    continue
   fi
+
+  curl -L -o $TMP_PATH/$name.zip -u x:$ART_TOKEN $url
+
+  if [ $ART_UNZIP == "true" ]; then
+    unzip -d $ART_PATH $TMP_PATH/$name.zip
+  else
+    mv $TMP_PATH/$name.zip $ART_PATH/$name.zip
+  fi
+
 done
 
 rm -fr $TMP_PATH
