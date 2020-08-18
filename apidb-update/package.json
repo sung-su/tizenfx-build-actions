@@ -1,12 +1,11 @@
 {
-  "name": "tizenfx-apidb-action",
+  "name": "tizenfx-apidb-update-action",
   "version": "1.0.0",
-  "description": "Access to the API database for TizenFX.",
+  "description": "Update API changes to APIDB",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js apidb.js",
-    "package": "ncc build index.js -o dist",
-    "test": "eslint index.js apidb.js && jest"
+    "lint": "eslint index.js",
+    "package": "ncc build index.js -o dist"
   },
   "repository": {
     "type": "git",
@@ -21,12 +20,11 @@
   "bugs": {
     "url": "https://github.com/TizenAPI/tizenfx-build-actions/issues"
   },
-  "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/apidb#readme",
+  "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/apidb-update#readme",
   "dependencies": {
+    "common": "file:../common/",
     "@actions/core": "^1.2.4",
-    "@actions/github": "^4.0.0",
-    "aws-sdk": "^2.732.0",
-    "diff": "^4.0.2"
+    "aws-sdk": "^2.732.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",

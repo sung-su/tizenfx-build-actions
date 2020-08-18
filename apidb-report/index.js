@@ -2,7 +2,6 @@ const fs = require('fs');
 const diff = require('diff');
 const core = require('@actions/core');
 const github = require('@actions/github');
-const {APIDB} = require('./apidb');
 
 const LABEL_ACR_REQUIRED = 'ACR Required';
 const LABEL_INTERNAL_API_CHANGED = 'Internal API Changed';
@@ -13,107 +12,53 @@ async function run() {
     const token = core.getInput('token');
     const repo = core.getInput('repo');
     const issueNumber = core.getInput('issue-number');
-    const operation = core.getInput('operation');
-    const category = core.getInput('category');
-    const path = core.getInput('path');
+    const inputPath = core.getInput('path');
 
-    // Read API from local file
-    const rawdata = fs.readFileSync(path);
-    const localItems = JSON.parse(rawdata);
-
-    if (operation === 'compare') {
-      await compareItems(token, repo, issueNumber, category, localItems);
-    } else if (operation == 'update') {
-      await updateItems(category, localItems);
+    const repoArr = repo.split('/');
+    if (repoArr.length !== 2) {
+      throw new Error(`Invalid repo: ${repo}`);
     }
-  } catch (error) {
-    console.error(error);
-    core.setFailed(error.message);
-  }
-}
 
-async function compareItems(token, repo, issueNumber, category, localItems) {
-  const repoArr = repo.split('/');
-  if (repoArr.length !== 2) {
-    throw new Error(`Invalid repo: ${repo}`);
-  }
+    // Read the comparison result
+    const result = fs.readFileSync(inputPath);
+    const comp = JSON.parse(result);
 
-  if (!issueNumber) {
-    throw new Error('Issue number is not set');
-  }
+    // Get octokit
+    const octokit = github.getOctokit(token);
 
-  const db = new APIDB();
-  const dbItems = await db.query(category);
+    // Create comment
+    if (comp.totalChanged) {
+      const report = makeReport(comp);
+      await octokit.issues.createComment({
+        owner: repoArr[0],
+        repo: repoArr[1],
+        issue_number: issueNumber,
+        body: report,
+      });
+    }
 
-  const octokit = github.getOctokit(token);
-
-  // Compare db with local
-  const comp = db.compare(dbItems, localItems);
-
-  // Create comment
-  if (comp.totalChanged) {
-    const report = makeReport(comp);
-    await octokit.issues.createComment({
+    // Set Labels
+    const labels = await octokit.issues.listLabelsOnIssue({
       owner: repoArr[0],
       repo: repoArr[1],
       issue_number: issueNumber,
-      body: report,
     });
-  }
 
-  // Set Labels
-  const labels = await octokit.issues.listLabelsOnIssue({
-    owner: repoArr[0],
-    repo: repoArr[1],
-    issue_number: issueNumber,
-  });
+    const labelSet = new Set(labels.data.map((i) => i.name));
+    comp.publicChanged ? labelSet.add(LABEL_ACR_REQUIRED) :
+                         labelSet.delete(LABEL_ACR_REQUIRED);
+    comp.internalChanged ? labelSet.add(LABEL_INTERNAL_API_CHANGED) :
+                           labelSet.delete(LABEL_INTERNAL_API_CHANGED);
 
-  const labelSet = new Set(labels.data.map((i) => i.name));
-  comp.publicChanged ? labelSet.add(LABEL_ACR_REQUIRED) :
-                       labelSet.delete(LABEL_ACR_REQUIRED);
-  comp.internalChanged ? labelSet.add(LABEL_INTERNAL_API_CHANGED) :
-                         labelSet.delete(LABEL_INTERNAL_API_CHANGED);
-
-  await octokit.issues.setLabels({
-    owner: repoArr[0],
-    repo: repoArr[1],
-    issue_number: issueNumber,
-    labels: Array.from(labelSet),
-  });
-}
-
-async function updateItems(category, localItems) {
-  const db = new APIDB();
-  const dbItems = await db.query(category);
-
-  // Compare db with local
-  const comp = db.compare(dbItems, localItems);
-
-  const addedItems = {};
-  comp.addedKeys.forEach((docId) => {
-    addedItems[docId] = comp.newItems[docId];
-  });
-
-  const changedItems = {};
-  comp.changedKeys.forEach((docId) => {
-    changedItems[docId] = comp.newItems[docId];
-  });
-
-  if (comp.totalChanged) {
-    if (comp.addedKeys.size > 0) {
-      console.log('## Add Items ##');
-      await db.put(category, addedItems);
-    }
-    if (comp.changedKeys.size > 0) {
-      console.log('## Update Items ##');
-      await db.put(category, changedItems);
-    }
-    if (comp.removedKeys.size > 0) {
-      console.log('## Delete Items ##');
-      await db.delete(category, comp.removedKeys);
-    }
-  } else {
-    console.log('## No items to update');
+    await octokit.issues.setLabels({
+      owner: repoArr[0],
+      repo: repoArr[1],
+      issue_number: issueNumber,
+      labels: Array.from(labelSet),
+    });
+  } catch (error) {
+    console.error(error);
+    core.setFailed(error.message);
   }
 }
 

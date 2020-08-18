@@ -1,0 +1,24 @@
+{
+  "name": "tizenfx-common",
+  "version": "1.0.0",
+  "description": "Common libraries for TizenFX Build Actions",
+  "scripts": {
+    "lint": "eslint *.js",
+    "test": "eslint *.js && jest"
+  },
+  "author": "Wonyoung Choi",
+  "license": "MIT",
+  "dependencies": {
+    "aws-sdk": "^2.732.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.6.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^24.9.0"
+  }
+}

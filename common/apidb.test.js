@@ -1,14 +1,14 @@
 const fs = require('fs');
 const path = require('path');
-const {APIDB} = require('./apidb')
+const {APIDB} = require('./apidb');
 
-test('test compare', async() => {
+test('test compare', async () => {
   const oldJson = JSON.parse(
-      fs.readFileSync(path.join(__dirname, 'test_data', 'old.json'))
-    );
+      fs.readFileSync(path.join(__dirname, 'test_data', 'old.json')),
+  );
   const newJson = JSON.parse(
-      fs.readFileSync(path.join(__dirname, 'test_data', 'new.json'))
-     );
+      fs.readFileSync(path.join(__dirname, 'test_data', 'new.json')),
+  );
 
   const db = new APIDB();
   const comp = db.compare(oldJson, newJson);
