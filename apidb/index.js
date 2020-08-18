@@ -22,7 +22,7 @@ async function run() {
     const localItems = JSON.parse(rawdata);
 
     if (operation === 'compare') {
-      await compareItems(token, category, localItems);
+      await compareItems(token, repo, issueNumber, category, localItems);
     } else if (operation == 'update') {
       await updateItems(category, localItems);
     }
@@ -33,7 +33,6 @@ async function run() {
 }
 
 async function compareItems(token, repo, issueNumber, category, localItems) {
-
   const repoArr = repo.split('/');
   if (repoArr.length !== 2) {
     throw new Error(`Invalid repo: ${repo}`);
