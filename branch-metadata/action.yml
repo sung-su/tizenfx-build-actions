@@ -1,6 +1,15 @@
 name: 'Branch Metadata'
 description: 'Provides metadata information of a branch'
 inputs:
+  token:
+    description: Github Token
+    default: ${{ github.token }}
+  repo:
+    description: The owner and repository name. For example, Codertocat/Hello-World.
+    default: ${{ github.repository }}
+  path:
+    description: Metadata file path to read. Default is `.github/branch-metadata.yml`.
+    default: .github/branch-metadata.yml
   ref:
     description: The branch to provide the metadata.
     default: ${{ github.ref }}

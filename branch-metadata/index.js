@@ -1,20 +1,19 @@
-const fs = require('fs');
 const yaml = require('js-yaml');
 const core = require('@actions/core');
+const github = require('@actions/github');
 
 async function run() {
   try {
     // Inputs
+    const token = core.getInput('token');
+    const repo = core.getInput('repo');
+    const path = core.getInput('path');
     const ref = core.getInput('ref');
     const prop = core.getInput('prop');
 
     // Load Branch Metadata File
-    const mapFile = process.env.BRANCH_METADATA_FILE ||
-                      '.github/branch-metadata.yml';
-    if (!fs.existsSync(mapFile)) {
-      throw new Error(`Can not find a branch metadata file. (${mapFile})`);
-    }
-    const metadata = yaml.safeLoad(fs.readFileSync(mapFile, 'utf8'));
+    const content = await downloadMetadata(token, repo, path);
+    const metadata = yaml.safeLoad(content);
 
     // Set Output
     let branch = ref;
@@ -33,6 +32,20 @@ async function run() {
   } catch (error) {
     core.setFailed(error.message);
   }
+}
+
+async function downloadMetadata(token, repo, path) {
+  const repoArr = repo.split('/');
+  const octokit = github.getOctokit(token);
+  const res = await octokit.repos.getContent({
+    owner: repoArr[0],
+    repo: repoArr[1],
+    path,
+  });
+  if (res.status !== 200) {
+    throw new Error(`Can not read a metadata file. ${repo}/${path}`);
+  }
+  return Buffer.from(res.data.content, 'base64').toString('utf8');
 }
 
 run();

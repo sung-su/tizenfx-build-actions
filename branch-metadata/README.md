@@ -24,10 +24,9 @@ API7:
       ref: ${{ github.base_ref }}
 ```
 
-#### Env
-  - BRANCH_METADATA_FILE: The path of metadata yaml file. Default is `.github/branch-metadata.yml`.
-
 #### Inputs
+  - repo: The owner and repository name. For example, Codertocat/Hello-World. Default is `$GITHUB_REPOSITORY`.
+  - path: Metadata file path to read. Default is `.github/branch-metadata.yml`.
   - ref: The target branch of the pull request or the base branch of the push. Default is `$GITHUB_REF`.
   - prop: The property key to return as output data, all metadata set of the branch will be return if not set.
 

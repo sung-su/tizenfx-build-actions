@@ -1,8 +1,6 @@
 const path = require('path');
 const exec = require('../common/exec')
 
-process.env['BRANCH_METADATA_FILE'] = './test_data/branch-metadata.yml';
-
 test('master', async() => {
   const metadata = await getMetadata('master');
   expect(metadata['api-level']).toBe('API8');
@@ -44,6 +42,8 @@ test('no-branch-and-no-prop', async() => {
 });
 
 async function getMetadata(ref, prop) {
+  process.env['INPUT_REPO'] = 'TizenAPI/TizenFX';
+  process.env['INPUT_PATH'] = '.github/branch-metadata.yml';
   process.env['INPUT_REF'] = ref;
   process.env['INPUT_PROP'] = prop || '';
 
