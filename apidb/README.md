@@ -7,6 +7,8 @@ Create a report or update API DB with the result of comparison between local bui
   - uses: TizenAPI/tizenfx-build-actions/apidb@master
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
+      repo: TizenFX/TizenAPI
+      issue-number: 2
       operation: compare
       category: API8
       path: api.json

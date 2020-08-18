@@ -4,6 +4,11 @@ inputs:
   token:
     description: GitHub Token
     default: ${{ github.token }}
+  repo:
+    description: Repository to post back reports
+    default: ${{ github.repository }}
+  issue-number:
+    description: Issue number to post back reports
   operation:
     description: compare, update
     required: true

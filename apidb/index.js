@@ -11,6 +11,8 @@ async function run() {
   try {
     // Inputs
     const token = core.getInput('token');
+    const repo = core.getInput('repo');
+    const issueNumber = core.getInput('issue-number');
     const operation = core.getInput('operation');
     const category = core.getInput('category');
     const path = core.getInput('path');
@@ -30,7 +32,17 @@ async function run() {
   }
 }
 
-async function compareItems(token, category, localItems) {
+async function compareItems(token, repo, issueNumber, category, localItems) {
+
+  const repoArr = repo.split('/');
+  if (repoArr.length !== 2) {
+    throw new Error(`Invalid repo: ${repo}`);
+  }
+
+  if (!issueNumber) {
+    throw new Error('Issue number is not set');
+  }
+
   const db = new APIDB();
   const dbItems = await db.query(category);
 
@@ -43,18 +55,18 @@ async function compareItems(token, category, localItems) {
   if (comp.totalChanged) {
     const report = makeReport(comp);
     await octokit.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: github.context.issue.number,
+      owner: repoArr[0],
+      repo: repoArr[1],
+      issue_number: issueNumber,
       body: report,
     });
   }
 
   // Set Labels
   const labels = await octokit.issues.listLabelsOnIssue({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    issue_number: github.context.issue.number,
+    owner: repoArr[0],
+    repo: repoArr[1],
+    issue_number: issueNumber,
   });
 
   const labelSet = new Set(labels.data.map((i) => i.name));
@@ -64,9 +76,9 @@ async function compareItems(token, category, localItems) {
                          labelSet.delete(LABEL_INTERNAL_API_CHANGED);
 
   await octokit.issues.setLabels({
-    owner: github.context.repo.owner,
-    repo: github.context.repo.repo,
-    issue_number: github.context.issue.number,
+    owner: repoArr[0],
+    repo: repoArr[1],
+    issue_number: issueNumber,
     labels: Array.from(labelSet),
   });
 }
