@@ -49,7 +49,9 @@ async function run() {
           }
           const severity = match[matcher['severity']];
           if (severity === 'error') {
-            errors.push(line);
+            if (errors.indexOf(line) === -1) {
+              errors.push(line);
+            }
           }
         } else {
           console.log(line);
