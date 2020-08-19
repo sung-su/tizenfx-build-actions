@@ -775,11 +775,15 @@ async function run() {
       branch = ref.substring('refs/heads/'.length);
     }
 
-    if (metadata[branch]) {
+    const branchInfo = metadata[branch];
+    if (branchInfo) {
       if (prop) {
-        core.setOutput('data', JSON.stringify(metadata[branch][prop]));
+        core.setOutput('data', JSON.stringify(branchInfo[prop]));
       } else {
-        core.setOutput('data', JSON.stringify(metadata[branch]));
+        core.setOutput('data', JSON.stringify(branchInfo));
+        Object.keys(branchInfo).forEach((k) => {
+          core.setOutput(k, JSON.stringify(branchInfo[k]));
+        });
       }
     }
   } catch (error) {

@@ -1,42 +1,42 @@
 const path = require('path');
 const exec = require('common/exec')
 
-test('master', async() => {
+test('master', async () => {
   const metadata = await getMetadata('master');
   expect(metadata['api-level']).toBe('API8');
 });
 
-test('refs/heads/master', async() => {
+test('refs/heads/master', async () => {
   const metadata = await getMetadata('refs/heads/master');
   expect(metadata['api-level']).toBe('API8');
 });
 
-test('API7', async() => {
+test('API7', async () => {
   const metadata = await getMetadata('API7');
   expect(metadata['api-level']).toBe('API7');
 });
 
-test('refs/heads/API7', async() => {
+test('refs/heads/API7', async () => {
   const metadata = await getMetadata('refs/heads/API7');
   expect(metadata['api-level']).toBe('API7');
 });
 
-test('no-branch', async() => {
+test('no-branch', async () => {
   const metadata = await getMetadata('no-branch');
   expect(metadata).toBe(undefined);
 });
 
-test('prop-api-level', async() => {
+test('prop-api-level', async () => {
   const metadata = await getMetadata('master', 'api-level');
   expect(metadata).toBe('API8');
 });
 
-test('no-prop', async() => {
+test('no-prop', async () => {
   const metadata = await getMetadata('master', 'no-prop');
   expect(metadata).toBe(undefined);
 });
 
-test('no-branch-and-no-prop', async() => {
+test('no-branch-and-no-prop', async () => {
   const metadata = await getMetadata('no-branch', 'no-prop');
   expect(metadata).toBe(undefined);
 });
