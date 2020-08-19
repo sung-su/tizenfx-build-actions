@@ -1,1 +1,8 @@
-test-local/
+node_modules/
+package-lock.json
+bin/
+obj/
+test*/
+test*.js
+test*.sh
+test*.json
