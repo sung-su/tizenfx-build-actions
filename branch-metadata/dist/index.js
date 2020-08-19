@@ -782,7 +782,12 @@ async function run() {
       } else {
         core.setOutput('data', JSON.stringify(branchInfo));
         Object.keys(branchInfo).forEach((k) => {
-          core.setOutput(k, JSON.stringify(branchInfo[k]));
+          const v = branchInfo[k];
+          if (typeof(v) === 'object') {
+            core.setOutput(k, JSON.stringify(branchInfo[k]));
+          } else {
+            core.setOutput(k, branchInfo[k]);
+          }
         });
       }
     }
