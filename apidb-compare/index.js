@@ -16,6 +16,9 @@ async function run() {
     if (baseFile) {
       baseItems = JSON.parse(fs.readFileSync(baseFile));
     } else {
+      if (!category) {
+        throw new Error(`Invalid category to query: ${category}`);
+      }
       baseItems = await db.query(category);
     }
 
