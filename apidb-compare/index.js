@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const core = require('@actions/core');
 const {APIDB} = require('common/apidb');
 
@@ -12,7 +14,7 @@ async function run() {
     const db = new APIDB();
 
     // Read Base API from local file or APIDB
-    const baseItems = undefined;
+    let baseItems = undefined;
     if (baseFile) {
       baseItems = JSON.parse(fs.readFileSync(baseFile));
     } else {
@@ -30,11 +32,11 @@ async function run() {
 
     // Write Results
     const dirname = path.dirname(output);
-    if (!fs.existSync(dirname)) {
+    if (!fs.existsSync(dirname)) {
       fs.mkdirSync(dirname, {recursive: true});
     }
 
-    fs.writeFileSync(output, JSON.stringify(comp));
+    fs.writeFileSync(output, JSON.stringify(comp, null, 2));
   } catch (error) {
     console.error(error);
     core.setFailed(error.message);

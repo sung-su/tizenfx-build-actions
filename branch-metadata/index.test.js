@@ -1,5 +1,5 @@
 const path = require('path');
-const exec = require('../common/exec')
+const exec = require('common/exec')
 
 test('master', async() => {
   const metadata = await getMetadata('master');

@@ -14,13 +14,13 @@ test('test compare', async () => {
   const comp = db.compare(oldJson, newJson);
 
   expect(comp.totalChanged).toBe(12);
-  expect(comp.addedKeys.size).toBe(2);
-  expect(comp.changedKeys.size).toBe(4);
-  expect(comp.removedKeys.size).toBe(6);
-  expect(comp.addedPublicKeys.size).toBe(2);
-  expect(comp.changedPublicKeys.size).toBe(1);
-  expect(comp.removedPublicKeys.size).toBe(6);
-  expect(comp.addedInternalKeys.size).toBe(1);
-  expect(comp.changedInternalKeys.size).toBe(2);
-  expect(comp.removedInternalKeys.size).toBe(1);
+  expect(comp.addedKeys.length).toBe(2);
+  expect(comp.changedKeys.length).toBe(4);
+  expect(comp.removedKeys.length).toBe(6);
+  expect(comp.addedPublicKeys.length).toBe(2);
+  expect(comp.changedPublicKeys.length).toBe(1);
+  expect(comp.removedPublicKeys.length).toBe(6);
+  expect(comp.addedInternalKeys.length).toBe(1);
+  expect(comp.changedInternalKeys.length).toBe(2);
+  expect(comp.removedInternalKeys.length).toBe(1);
 });

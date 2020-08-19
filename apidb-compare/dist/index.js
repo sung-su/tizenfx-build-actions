@@ -2533,6 +2533,8 @@ module.exports = AWS.SequentialExecutor;
 /***/ 104:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
+const fs = __webpack_require__(747);
+const path = __webpack_require__(622);
 const core = __webpack_require__(470);
 const {APIDB} = __webpack_require__(945);
 
@@ -2547,7 +2549,7 @@ async function run() {
     const db = new APIDB();
 
     // Read Base API from local file or APIDB
-    const baseItems = undefined;
+    let baseItems = undefined;
     if (baseFile) {
       baseItems = JSON.parse(fs.readFileSync(baseFile));
     } else {
@@ -2565,11 +2567,11 @@ async function run() {
 
     // Write Results
     const dirname = path.dirname(output);
-    if (!fs.existSync(dirname)) {
+    if (!fs.existsSync(dirname)) {
       fs.mkdirSync(dirname, {recursive: true});
     }
 
-    fs.writeFileSync(output, JSON.stringify(comp));
+    fs.writeFileSync(output, JSON.stringify(comp, null, 2));
   } catch (error) {
     console.error(error);
     core.setFailed(error.message);
@@ -21427,15 +21429,15 @@ class APIDB {
     return {
       oldItems,
       newItems,
-      addedKeys,
-      addedPublicKeys,
-      addedInternalKeys,
-      removedKeys,
-      removedPublicKeys,
-      removedInternalKeys,
-      changedKeys,
-      changedPublicKeys,
-      changedInternalKeys,
+      addedKeys: Array.from(addedKeys),
+      addedPublicKeys: Array.from(addedPublicKeys),
+      addedInternalKeys: Array.from(addedInternalKeys),
+      removedKeys: Array.from(removedKeys),
+      removedPublicKeys: Array.from(removedPublicKeys),
+      removedInternalKeys: Array.from(removedInternalKeys),
+      changedKeys: Array.from(changedKeys),
+      changedPublicKeys: Array.from(changedPublicKeys),
+      changedInternalKeys: Array.from(changedInternalKeys),
       totalChanged,
       publicChanged,
       internalChanged,
