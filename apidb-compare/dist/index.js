@@ -2540,18 +2540,25 @@ async function run() {
   try {
     // Inputs
     const category = core.getInput('category');
-    const inputPath = core.getInput('path');
+    const inputFile = core.getInput('file');
+    const baseFile = core.getInput('base-file');
     const output = core.getInput('output');
 
     const db = new APIDB();
-    const dbItems = await db.query(category);
+
+    // Read Base API from local file or APIDB
+    const baseItems = undefined;
+    if (baseFile) {
+      baseItems = JSON.parse(fs.readFileSync(baseFile));
+    } else {
+      baseItems = await db.query(category);
+    }
 
     // Read API from local file
-    const rawdata = fs.readFileSync(inputPath);
-    const localItems = JSON.parse(rawdata);
+    const localItems = JSON.parse(fs.readFileSync(inputFile));
 
     // Compare
-    const comp = db.compare(dbItems, localItems);
+    const comp = db.compare(baseItems, localItems);
 
     // Write Results
     const dirname = path.dirname(output);
