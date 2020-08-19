@@ -105,7 +105,7 @@ function makeReportDetail(comp, added, removed, changed) {
   details.push('<summary>' +
                makeSummaryLine(added, removed, changed) +
                '</summary>\n');
-  if (added.size) {
+  if (added.length) {
     details.push('### Added');
     details.push('```diff');
     added.forEach((i) => {
@@ -114,7 +114,7 @@ function makeReportDetail(comp, added, removed, changed) {
     });
     details.push('```');
   }
-  if (removed.size) {
+  if (removed.length) {
     details.push('### Removed');
     details.push('```diff');
     removed.forEach((i) => {
@@ -123,7 +123,7 @@ function makeReportDetail(comp, added, removed, changed) {
     });
     details.push('```');
   }
-  if (changed.size) {
+  if (changed.length) {
     details.push('### Changed');
     details.push('```diff');
     changed.forEach((i) => {
@@ -143,7 +143,7 @@ function makeReportDetail(comp, added, removed, changed) {
 }
 
 function makeSummaryLine(add, rem, ch) {
-  return `Added: ${add.size}, Removed: ${rem.size}, Changed: ${ch.size}`;
+  return `Added: ${add.length}, Removed: ${rem.length}, Changed: ${ch.length}`;
 }
 
 function printInfo(info) {
