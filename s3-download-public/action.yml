@@ -1,0 +1,29 @@
+name: 'AWS S3 Download for Public'
+description: 'Download AWS S3 Public Objects '
+inputs:
+  region:
+    description: AWS region
+    default: ap-northeast-2
+  bucket:
+    description: The bucket name containing the object.
+    required: true
+  key:
+    description: Key of the object to get.
+    required: true
+  path:
+    description: File path to save the downloaded object.
+outputs:
+  code:
+    description: HTTP status code of the response
+    value: ${{ steps.download.outputs.code }}
+runs:
+  using: 'composite'
+  steps:
+    - id: download
+      run: ${{ github.action_path }}/download.sh
+      shell: bash
+      env:
+        S3_REGION: ${{ inputs.region }}
+        S3_BUCKET: ${{ inputs.bucket }}
+        S3_OBJKEY: ${{ inputs.key }}
+        S3_PATH: ${{ inputs.path }}
