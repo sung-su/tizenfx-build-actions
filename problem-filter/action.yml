@@ -4,6 +4,8 @@ inputs:
   run:
     description: 'shell command to execute'
     required: true
+  working-directory: 
+    description: 'the working directory of where to run the command'
   type:
     description: 'Problem-matcher type'
     default: 'dotnet'

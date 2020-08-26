@@ -83,6 +83,7 @@ const PROBLEM_MATCHERS = {
 async function run() {
   try {
     const commands = core.getInput('run').split(/\r?\n/);
+    const workingDirectory = core.getInput('working-directory');
     const type = core.getInput('type');
     const files = core.getInput('files');
 
@@ -102,8 +103,12 @@ async function run() {
 
     // execute command
     const re = new RegExp(matcher['regexp']);
+    const options = {
+      env: process.env,
+      cwd: workingDirectory || process.cwd(),
+    };
     for (const cmd of commands) {
-      const ret = await exec(cmd.trim(), {env: process.env}, (line) => {
+      const ret = await exec(cmd.trim(), options, (line) => {
         const match = re.exec(line);
         if (match) {
           if (changedFiles.includes(getMatchedFile(matcher, match))) {
