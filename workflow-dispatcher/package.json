@@ -1,0 +1,40 @@
+{
+  "name": "workflow-dispatcher-action",
+  "version": "1.0.0",
+  "description": "Create workflow dispatch event",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint index.js",
+    "package": "ncc build index.js -o dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TizenAPI/tizenfx-build-actions.git"
+  },
+  "keywords": [
+    "workflow",
+    "dispatch"
+  ],
+  "author": "Wonyoung Choi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TizenAPI/tizenfx-build-actions/issues"
+  },
+  "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/workflow-dispatcher#readme",
+  "dependencies": {
+    "common": "file:../common/",
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.20.5",
+    "eslint": "^7.6.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^24.9.0"
+  }
+}

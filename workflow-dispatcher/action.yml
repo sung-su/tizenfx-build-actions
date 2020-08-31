@@ -1,0 +1,18 @@
+name: 'Workflow Dispatcher'
+description: 'Create workflow dispatch event'
+inputs:
+  token:
+    description: 'Github Token'
+    default: ${{ github.token }}
+  workflow:
+    description: 'Workflow name to manually trigger'
+  workflow-file:
+    description: 'Workflow file name to manually trigger'
+  ref:
+    description: 'The reference of the workflow run'
+    default: 'master'
+  inputs:
+    description: 'Input keys and values configured in the workflow file'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
