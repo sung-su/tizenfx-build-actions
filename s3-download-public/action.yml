@@ -1,5 +1,5 @@
 name: 'AWS S3 Download for Public'
-description: 'Download AWS S3 Public Objects '
+description: 'Download AWS S3 Public Objects'
 inputs:
   region:
     description: AWS region
