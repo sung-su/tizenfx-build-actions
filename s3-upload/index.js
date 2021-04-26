@@ -1,4 +1,5 @@
 const fs = require('fs');
+const glob = require('glob');
 const path = require('path');
 const core = require('@actions/core');
 const AWS = require('aws-sdk');
@@ -9,14 +10,17 @@ async function run() {
     const file = core.getInput('file');
     const region = core.getInput('region');
     const bucket = core.getInput('bucket');
-    let key = core.getInput('key');
+    const folder = core.getInput('folder');
+    const key = core.getInput('key');
 
-    if (!fs.existsSync(file)) {
+    const uploadFiles = glob.sync(file);
+
+    if (uploadFiles.length == 0) {
       throw new Error(`File not found : ${file}`);
     }
 
-    if (!key) {
-      key = path.basename(file);
+    if (uploadFiles.length > 1 && key) {
+      throw new Error('key argument is availabe when upload a single file');
     }
 
     // Config AWS
@@ -24,16 +28,19 @@ async function run() {
       region,
     });
 
-    // Upload a file
-    const data = await uploadFile(file, bucket, key);
-    core.setOutput('data', JSON.stringify(data));
+    uploadFiles.forEach(async (matchedFile) => {
+      let targetKey = key ? key : path.basename(matchedFile);
+      targetKey = folder ? path.join(folder, targetKey) : targetKey;
+      const data = await uploadToBucket(matchedFile, bucket, targetKey);
+      core.setOutput('data', JSON.stringify(data));
+    });
   } catch (error) {
     console.error(error);
     core.setFailed(error.message);
   }
 }
 
-async function uploadFile(filepath, bucket, key) {
+async function uploadToBucket(filepath, bucket, key) {
   const s3 = new AWS.S3({apiVersion: '2006-03-01'});
   return new Promise((resolve, reject) => {
     fs.readFile(filepath, (err, data) => {

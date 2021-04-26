@@ -24,7 +24,8 @@
   "homepage": "https://github.com/TizenAPI/tizenfx-build-actions/tree/master/s3-upload#readme",
   "dependencies": {
     "@actions/core": "^1.2.4",
-    "aws-sdk": "^2.732.0"
+    "aws-sdk": "^2.732.0",
+    "glob": "^7.1.6"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
